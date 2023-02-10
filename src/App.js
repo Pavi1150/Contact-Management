@@ -1,23 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import ContactSection from "./Components/ContactSection";
+import FormSection from "./Components/FormSection";
+import TableSection from "./Components/TableSection";
 
 function App() {
+  const [contact, setContact] = useState([]);
+  const [details, setDetails] = useState({
+    id: "",
+    name: "",
+    email: "",
+    phone: "",
+    company: "",
+    address: "",
+    selected: false,
+  });
+  const [state, setState] = useState({
+    List: contact,
+    MasterChecked: false,
+    SelectedList: [],
+  });
+  console.log(state.List, "kkk");
+  const [selectedDetails, setSelectedDetails] = useState({});
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container mt-5">
+      <div className="row">
+        <div className="col-6 ">
+          <ContactSection />
+          <TableSection
+            contact={contact}
+            setContact={setContact}
+            details={details}
+            setDetails={setDetails}
+            selectedDetails={selectedDetails}
+            setSelectedDetails={setSelectedDetails}
+            state={state}
+            setState={setState}
+          />
+        </div>
+        <div className="col-5 offset-1">
+          <FormSection contact={contact} selectedDetails={selectedDetails} />
+        </div>
+      </div>
     </div>
   );
 }

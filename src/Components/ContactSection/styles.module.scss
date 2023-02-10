@@ -1,0 +1,27 @@
+.contactIcon {
+  width: 30px;
+  height: 45px;
+  color: linear-gradient(to right, #ee9a4d, #f67280);
+}
+.textFont {
+  font-size: 12px;
+  color: #9b9494;
+}
+.inputBox {
+  border-radius: 10px;
+  border: transparent;
+  width: 250px;
+  background-color: #d3d3d380;
+}
+.contactButton {
+  background-image: linear-gradient(to right, #ee9a4d, #f67280);
+
+  color: white;
+  border: transparent;
+  border-radius: 5px;
+}
+.searchIcon {
+  position: absolute;
+  right: 61%;
+  top: 76%;
+}
