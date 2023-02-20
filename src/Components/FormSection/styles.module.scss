@@ -3,6 +3,8 @@
   border: transparent;
 }
 .noDataSection {
-  position: absolute;
-  top: 50%;
+  // position: absolute;
+  // top: 50%;
+  display: flex;
+  justify-content: center;
 }
