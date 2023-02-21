@@ -19,7 +19,6 @@ function App() {
     MasterChecked: false,
     SelectedList: [],
   });
-  console.log(state.List, "kkk");
   const [selectedDetails, setSelectedDetails] = useState({});
   return (
     <div className="container mt-5">

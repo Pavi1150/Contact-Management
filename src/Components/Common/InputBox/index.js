@@ -12,7 +12,7 @@ const InputBox = (props) => {
           label={label}
           className="inputBox"
           onChange={onChange}
-          required={true}
+          // required={true}
           placeholder={placeholder}
         />
       </div>

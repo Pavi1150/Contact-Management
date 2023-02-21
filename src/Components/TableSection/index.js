@@ -5,6 +5,7 @@ import { IoIosSearch } from "react-icons/io";
 import Modal from "react-bootstrap/Modal";
 import NormalButton from "../Common/Button";
 import InputBox from "../Common/InputBox";
+import useMultiSelect from "../Common/useMultiSelect";
 
 const TableSection = ({
   contact,
@@ -17,78 +18,86 @@ const TableSection = ({
   setState,
   isShow = false,
 }) => {
+  const [filteredArray, setFilteredArray] = useState([]);
   const [search, setSearch] = useState("");
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const {
+    isDelete,
+    setisDelete,
+    headerCheckbox,
+    handleHeaderCheckbox,
+    handleCheckbox,
+  } = useMultiSelect(contact, setContact);
 
-  const handleAdd = (e) => {
-    e.preventDefault();
-    const addData = {
-      id: Math.floor(Math.random() * (999 - 100 + 1) + 100),
-      // id: new Date(),
-      name: details.name,
-      email: details.email,
-      phone: details.phone,
-      company: details.company,
-      address: details.address,
-    };
-    const newContacts = [...contact, addData];
-    setContact(newContacts);
-    handleClose();
-    setDetails({
-      id: "",
-      name: "",
-      email: "",
-      phone: "",
-      company: "",
-      address: "",
-    });
-  };
-  const handleSearch = (val) => {
-    const filterRows = contact.filter((data) => {
-      return data.name.toLowerCase().includes(val.toLowerCase());
-    });
+  console.log(contact, "contact");
+
+  // const handleAdd = (e) => {
+  //   e.preventDefault();
+  //   const addData = {
+  //     id: Math.floor(Math.random() * (999 - 100 + 1) + 100),
+  //     // id: new Date(),
+  //     name: details.name,
+  //     email: details.email,
+  //     phone: details.phone,
+  //     company: details.company,
+  //     address: details.address,
+  //   };
+  //   const newContacts = [...contact, addData];
+  //   setContact(newContacts);
+  //   handleClose();
+  //   setDetails({
+  //     id: "",
+  //     name: "",
+  //     email: "",
+  //     phone: "",
+  //     company: "",
+  //     address: "",
+  //   });
+  // };
+
+  const handleSearch = (event) => {
+    let val = event?.target?.value;
     setSearch(val);
-    setContact(filterRows);
-  };
-  const handleEdit = (e) => {
-    {
-      console.log("e", e);
-    }
-    setDetails(e);
-    handleShow();
-  };
-  const onMasterCheck = (e) => {
-    let tempList = contact;
-    tempList.map((user) => (user.selected = e.target.checked));
-
-    setState({
-      MasterChecked: e.target.checked,
-      List: tempList,
-      SelectedList: state.List.filter((e) => e.selected),
-    });
-    {
-      console.log("tempList", tempList);
+    console.log(filteredArray, "filteredArray");
+    if (val !== "") {
+      const filterRows = filteredArray.filter((data) =>
+        data.name.toLowerCase().includes(val.toLowerCase())
+      );
+      setContact(filterRows);
+    } else {
+      setContact([...filteredArray]);
     }
   };
-  const onItemCheck = (e, item) => {
-    let tempList = state.List;
-    tempList.map((user) => {
-      if (user.id === item.id) {
-        user.selected = e.target.checked;
-      }
-      return user;
-    });
-    const totalItems = state.List.length;
-    const totalCheckedItems = tempList.filter((e) => e.selected).length;
 
-    setState({
-      MasterChecked: totalItems === totalCheckedItems,
-      List: tempList,
-      SelectedList: state.List.filter((e) => e.selected),
-    });
-  };
+  // const onMasterCheck = (e) => {
+  //   let tempList = contact;
+  //   tempList.map((user) => (user.selected = e.target.checked));
+
+  //   setState({
+  //     MasterChecked: e.target.checked,
+  //     List: tempList,
+  //     SelectedList: state.List.filter((e) => e.selected),
+  //   });
+  // };
+  // const onItemCheck = (e, item) => {
+  //   let tempList = state.List;
+  //   tempList.map((user) => {
+  //     if (user.id === item.id) {
+  //       user.selected = e.target.checked;
+  //     }
+  //     return user;
+  //   });
+  //   const totalItems = state.List.length;
+  //   const totalCheckedItems = tempList.filter((e) => e.selected).length;
+
+  //   setState({
+  //     MasterChecked: totalItems === totalCheckedItems,
+  //     List: tempList,
+  //     SelectedList: state.List.filter((e) => e.selected),
+  //   });
+  // };
   const getSelectedRows = (index) => {
     setState({
       SelectedList: state.List.filter((e) => e.selected !== index),
@@ -103,8 +112,8 @@ const TableSection = ({
   const submitHandler = () => {
     if (edit) {
       contact[editIndex] = details;
-      console.log("e");
       setContact(contact);
+      setFilteredArray(contact);
       setEditIndex(null);
       setEdit(false);
       setDetails({
@@ -119,6 +128,7 @@ const TableSection = ({
     } else {
       contact.push(details);
       setContact(contact);
+      setFilteredArray(contact);
       handleShow();
       setDetails({
         id: "",
@@ -149,8 +159,7 @@ const TableSection = ({
             className={`p-2 mb-5 w-75 ${styles.inputBox}`}
             value={search}
             onChange={(e) => {
-              setSearch(e.target.value);
-              setSearch(handleSearch);
+              handleSearch(e);
             }}
           />
           <IoIosSearch color="grey" className={styles.searchIcon} />
@@ -166,8 +175,8 @@ const TableSection = ({
             <input
               type="checkbox"
               className="form-check-input mt-4 ms-2"
-              checked={state.MasterChecked}
-              onChange={(e) => onMasterCheck(e)}
+              checked={headerCheckbox}
+              onChange={handleHeaderCheckbox}
             />
             <th className="ms-3">sno</th>
             <th>Basic Info</th>
@@ -177,33 +186,28 @@ const TableSection = ({
           <tbody>
             {Object.keys(contact).length > 0 ? (
               contact.map((dat, index) => {
-                {
-                  console.log("daaaat", dat);
-                }
                 return (
-                  <tr key={dat.id} className={dat.selected ? "selected" : ""}>
-                    {console.log("oooo", dat.id)}
+                  <tr
+                    key={dat.id}
+                    className={dat.selected ? "selected" : ""}
+                    onClick={() => {
+                      setSelectedDetails(dat);
+                    }}
+                  >
                     <th scope="row">
                       <input
                         type="checkbox"
-                        checked={dat.selected}
+                        checked={dat.isSelect}
                         className="form-check-input"
-                        onChange={(e) => onItemCheck(e, dat)}
+                        onChange={(e) => handleCheckbox(index)}
                       />
                     </th>
                     <td>{index + 1}</td>
-                    <td
-                      onClick={() => {
-                        setSelectedDetails(dat);
-                      }}
-                    >
-                      {dat.name}
-                    </td>
+                    <td>{dat.name}</td>
                     <td>{dat.company}</td>
                     <td>
                       <button
                         onClick={() => {
-                          // handleUpdate(dat.id);
                           handleUpdate(index);
                         }}
                         className="border-0"
